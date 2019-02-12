@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://SteadingIcon.gd" type="Script" id=1]
+
+[node name="SteadingIcon" type="Sprite" index="0"]
+
+position = Vector2( 200, 200 )
+scale = Vector2( 10, 10 )
+script = ExtResource( 1 )
+_sections_unfolded = [ "Animation", "Offset", "Region", "Transform" ]
+c1_min_h = 0
+c1_max_h = 360
+c1_min_s = 0
+c1_max_s = 1
+c1_min_l = 0
+c1_max_l = 1
+steading_size = 4
+
+

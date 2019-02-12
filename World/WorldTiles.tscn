@@ -1,0 +1,203 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://World/Sprites.png" type="Texture" id=1]
+
+
+[node name="Node" type="Node"]
+
+[node name="Desert" type="Sprite" parent="." index="0"]
+
+texture = ExtResource( 1 )
+vframes = 8
+hframes = 8
+_sections_unfolded = [ "Animation" ]
+
+[node name="Area2D" type="Area2D" parent="Desert" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Desert/Area2D" index="0"]
+
+build_mode = 0
+polygon = PoolVector2Array( 8, -16, 16, -0.5, 8, 15, -9, 15, -17, -0.5, -9, -16 )
+
+[node name="Ocean" type="Sprite" parent="." index="1"]
+
+position = Vector2( 64, 0 )
+texture = ExtResource( 1 )
+vframes = 8
+hframes = 8
+frame = 1
+_sections_unfolded = [ "Animation", "Transform" ]
+
+[node name="Area2D" type="Area2D" parent="Ocean" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+_sections_unfolded = [ "Transform" ]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Ocean/Area2D" index="0"]
+
+build_mode = 0
+polygon = PoolVector2Array( 8, -16, 16, -0.5, 8, 15, -9, 15, -17, -0.5, -9, -16 )
+
+[node name="Forest" type="Sprite" parent="." index="2"]
+
+position = Vector2( 128, 0 )
+texture = ExtResource( 1 )
+vframes = 8
+hframes = 8
+frame = 2
+_sections_unfolded = [ "Animation", "Transform" ]
+
+[node name="Area2D" type="Area2D" parent="Forest" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Forest/Area2D" index="0"]
+
+build_mode = 0
+polygon = PoolVector2Array( 8, -16, 16, -0.5, 8, 15, -9, 15, -17, -0.5, -9, -16 )
+
+[node name="Grasslands" type="Sprite" parent="." index="3"]
+
+position = Vector2( 192, 0 )
+texture = ExtResource( 1 )
+vframes = 8
+hframes = 8
+frame = 3
+_sections_unfolded = [ "Animation", "Transform" ]
+
+[node name="Area2D" type="Area2D" parent="Grasslands" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Grasslands/Area2D" index="0"]
+
+build_mode = 0
+polygon = PoolVector2Array( 8, -16, 16, -0.5, 8, 15, -9, 15, -17, -0.5, -9, -16 )
+
+[node name="Tundra" type="Sprite" parent="." index="4"]
+
+position = Vector2( 0, 64 )
+texture = ExtResource( 1 )
+vframes = 8
+hframes = 8
+frame = 4
+_sections_unfolded = [ "Animation", "Transform" ]
+
+[node name="Area2D" type="Area2D" parent="Tundra" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Tundra/Area2D" index="0"]
+
+build_mode = 0
+polygon = PoolVector2Array( 8, -16, 16, -0.5, 8, 15, -9, 15, -17, -0.5, -9, -16 )
+
+[node name="Lake" type="Sprite" parent="." index="5"]
+
+position = Vector2( 64, 64 )
+texture = ExtResource( 1 )
+vframes = 8
+hframes = 8
+frame = 5
+_sections_unfolded = [ "Animation", "Transform" ]
+
+[node name="Area2D" type="Area2D" parent="Lake" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Lake/Area2D" index="0"]
+
+build_mode = 0
+polygon = PoolVector2Array( 8, -16, 16, -0.5, 8, 15, -9, 15, -17, -0.5, -9, -16 )
+
+[node name="Mountain" type="Sprite" parent="." index="6"]
+
+position = Vector2( 128, 64 )
+texture = ExtResource( 1 )
+vframes = 8
+hframes = 8
+frame = 6
+_sections_unfolded = [ "Animation", "Transform" ]
+
+[node name="Area2D" type="Area2D" parent="Mountain" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+_sections_unfolded = [ "Transform" ]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Mountain/Area2D" index="0"]
+
+build_mode = 0
+polygon = PoolVector2Array( 8, -16, 16, -0.5, 8, 15, -9, 15, -17, -0.5, -9, -16 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="Border" type="Sprite" parent="." index="7"]
+
+position = Vector2( 192, 64 )
+texture = ExtResource( 1 )
+vframes = 8
+hframes = 8
+frame = 7
+_sections_unfolded = [ "Animation", "Transform" ]
+
+[node name="Area2D" type="Area2D" parent="Border" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+_sections_unfolded = [ "Transform" ]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Border/Area2D" index="0"]
+
+build_mode = 0
+polygon = PoolVector2Array( 8, -16, 16, -0.5, 8, 15, -9, 15, -17, -0.5, -9, -16 )
+_sections_unfolded = [ "Transform" ]
+
+
