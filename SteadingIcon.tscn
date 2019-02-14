@@ -2,10 +2,9 @@
 
 [ext_resource path="res://SteadingIcon.gd" type="Script" id=1]
 
-[node name="SteadingIcon" type="Sprite" index="0"]
+[node name="SteadingIcon" type="Sprite"]
 
-position = Vector2( 200, 200 )
-scale = Vector2( 10, 10 )
+scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 1 )
 _sections_unfolded = [ "Animation", "Offset", "Region", "Transform" ]
 c1_min_h = 0

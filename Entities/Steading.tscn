@@ -1,9 +1,15 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Entities/Steading.gd" type="Script" id=1]
+[ext_resource path="res://SteadingIcon.tscn" type="PackedScene" id=2]
 
 [node name="Steading" type="Node2D" index="0"]
 
 script = ExtResource( 1 )
+
+[node name="SteadingIcon" parent="." index="0" instance=ExtResource( 2 )]
+
+position = Vector2( 0, -5 )
+scale = Vector2( 1, 1 )
 
 

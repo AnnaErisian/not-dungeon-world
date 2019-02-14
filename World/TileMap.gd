@@ -3,14 +3,7 @@
 
 extends TileMap
 
-const BIOME_DESERT = 0
-const BIOME_OCEAN = 1
-const BIOME_FOREST = 2
-const BIOME_GRASSLANDS = 3
-const BIOME_TUNDRA = 4
-const BIOME_LAKE = 5
-const BIOME_MOUNTAIN = 6
-const BIOME_BORDER = 7
+var biomes = preload("res://World/Biomes.gd")
 
 const MAJOR_BIOME_SCALE = .04
 const MINOR_BIOME_SCALE = .16
@@ -52,7 +45,7 @@ func _ready():
 	c3 *= 2.0
 	r3 = size*40*(.8+.15*randf())
 
-var size = 60
+var size = 6
 var active_map_filling_var_i = -size
 var active_map_filling_var_j = -size
 var active_map_filling_var_k = -size
@@ -61,9 +54,10 @@ var done = false
 func _process(delta):
 	for i in range(10):
 		if !done && progressIterators():
-			var loc = axial_to_grid(active_map_filling_var_i,active_map_filling_var_j)
+			var loc = axial_to_offset(Vector2(active_map_filling_var_i,active_map_filling_var_j))
 			if get_cell(loc.x, loc.y) == -1:
-				set_cell(loc.x, loc.y, getBiome(active_map_filling_var_i,active_map_filling_var_j))
+				#print("%s %s | %s %s" % [active_map_filling_var_i, active_map_filling_var_j, loc.x, loc.y])
+				set_cell(loc.x, loc.y, getBiome(Vector2(active_map_filling_var_i,active_map_filling_var_j)))
 				update()
 
 func progressIterators():
@@ -78,99 +72,193 @@ func progressIterators():
 				active_map_filling_var_i+=1
 				if(active_map_filling_var_i>size):
 					done=true
+					setupSteadings()
 					return false
 		hit = active_map_filling_var_i+active_map_filling_var_j+active_map_filling_var_k==0
 	return true
 
-func getBiome(x,y):
-	if isBorder(x, y):
-		return BIOME_BORDER
+func getBiome(axial):
+	var x = axial.x
+	var y = axial.y
+	if isBorder(axial):
+		return biomes.BORDER
 	if isLand(x,y):
 		var major_biome = getMajorBiome(x,y)
-		if major_biome == BIOME_GRASSLANDS:
+		if major_biome == biomes.GRASSLANDS:
 			return getGrasslandsBiome(x,y)
-		if major_biome == BIOME_TUNDRA:
+		if major_biome == biomes.TUNDRA:
 			return getTundraBiome(x,y)
 		else:
 			return major_biome
 	else:
-		return BIOME_OCEAN
+		return biomes.OCEAN
 
-func isBorder(x,y):
-	return abs(x) == size || abs(y) == size || abs(-y-x) == size
+func isBorder(axial):
+	return abs(axial.x) == size || abs(axial.y) == size || abs(-axial.y-axial.x) == size
 
 func isLand(i,j):
-	if hex_to_pixel(c1.x,c1.y).distance_to(hex_to_pixel(i,j)) < r1:
+	if axial_to_pixel(c1).distance_to(axial_to_pixel(Vector2(i,j))) < r1:
 		return false
-	if hex_to_pixel(c2.x,c2.y).distance_to(hex_to_pixel(i,j)) < r2:
+	if axial_to_pixel(c2).distance_to(axial_to_pixel(Vector2(i,j))) < r2:
 		return false
-	if hex_to_pixel(c3.x,c3.y).distance_to(hex_to_pixel(i,j)) < r3:
+	if axial_to_pixel(c3).distance_to(axial_to_pixel(Vector2(i,j))) < r3:
 		return false
 	return true
 	
 func isNearOcean(i,j):
-	if hex_to_pixel(c1.x,c1.y).distance_to(hex_to_pixel(i,j)) < r1+80:
+	if axial_to_pixel(c1).distance_to(axial_to_pixel(Vector2(i,j))) < r1+80:
 		return true
-	if hex_to_pixel(c2.x,c2.y).distance_to(hex_to_pixel(i,j)) < r2+80:
+	if axial_to_pixel(c2).distance_to(axial_to_pixel(Vector2(i,j))) < r2+80:
 		return true
-	if hex_to_pixel(c3.x,c3.y).distance_to(hex_to_pixel(i,j)) < r3+80:
+	if axial_to_pixel(c3).distance_to(axial_to_pixel(Vector2(i,j))) < r3+80:
 		return true
 	return false
 
 func getMajorBiome(x,y):
 	var p = noise(major_biome_noise, MAJOR_BIOME_SCALE*x,MAJOR_BIOME_SCALE*y)
 	if p < .3:
-		return BIOME_DESERT
+		return biomes.DESERT
 	elif p < .7:
-		return BIOME_GRASSLANDS
+		return biomes.GRASSLANDS
 	else:
-		return BIOME_TUNDRA
+		return biomes.TUNDRA
 
 func getGrasslandsBiome(x,y):
 	if isNearOcean(x,y):
-		return BIOME_GRASSLANDS
+		return biomes.GRASSLANDS
 	var mp = noise(major_biome_noise, MAJOR_BIOME_SCALE*x,MAJOR_BIOME_SCALE*y)
 	if mp < .35 || mp > .65:
-		return BIOME_GRASSLANDS
+		return biomes.GRASSLANDS
 	var p = noise(grassland_biome_noise, MINOR_BIOME_SCALE*x,MINOR_BIOME_SCALE*y)
 	if p < .1:
-		return BIOME_LAKE
+		return biomes.LAKE
 	elif p < .75:
-		return BIOME_GRASSLANDS
+		return biomes.GRASSLANDS
 	else:
-		return BIOME_FOREST
+		return biomes.FOREST
 		
 func getTundraBiome(x,y):
 	if isNearOcean(x,y):
-		return BIOME_TUNDRA
+		return biomes.TUNDRA
 	var mp = noise(major_biome_noise, MAJOR_BIOME_SCALE*x,MAJOR_BIOME_SCALE*y)
 	if mp < .75:
-		return BIOME_TUNDRA
+		return biomes.TUNDRA
 	var p = noise(tundra_biome_noise, MINOR_BIOME_SCALE*x,MINOR_BIOME_SCALE*y)
 	if p < .08:
-		return BIOME_LAKE
+		return biomes.LAKE
 	elif p < .75:
-		return BIOME_TUNDRA
+		return biomes.TUNDRA
 	elif p < .95:
-		return BIOME_MOUNTAIN
+		return biomes.MOUNTAIN
 	else:
-		return BIOME_FOREST
+		return biomes.FOREST
 
 func noise(generator, x,y):
 	return (generator.openSimplex2D(x,y)+sqrt(3)/2)/sqrt(3)
 
-#func _process(delta):
-#	# Called every frame. Delta is time since last frame.
-#	# Update game logic here.
-#	pass
+#
+#       ENTITY PLACEMENT
+#
+func setupSteadings():
+	#create a steading at 0,0
+	var steadingScene = load("res://Entities/Steading.tscn")
+	for r in range(1,size):
+		var possible_cells = cube_ring(Vector3(0,0,0), r)
+		var target = possible_cells[randi()%possible_cells.size()]
+		var new_steading = steadingScene.instance()
+		new_steading.position = axial_to_pixel(cube_to_axial(target))
+		new_steading.size = new_steading.SIZE.City
+		new_steading.prosperity = new_steading.PROSPERITY.Rich
+		new_steading.population = new_steading.POPULATION.Booming
+		$Steadings.add_child(new_steading)
+		new_steading.update_icon()
 
 
-func axial_to_grid(x,y):
-	var col = x
-	var row = -x-y + (x - (x&1)) / 2
-	return Vector2(col, row)
+#
+#        HEX GRID OPERATIONS
+#
+
+var cube_directions = [
+    Vector3(+1, -1, 0), Vector3(+1, 0, -1), Vector3(0, +1, -1), 
+    Vector3(-1, +1, 0), Vector3(-1, 0, +1), Vector3(0, -1, +1), 
+]
+func cube_direction(direction):
+    return cube_directions[direction]
 	
-func hex_to_pixel(i, j):
-    var x = (23 * i)
-    var y = (15 * i  +  30 * j)
+func cube_neighbor(cube, direction):
+    return cube + cube_direction(direction)
+
+func cube_ring(center, radius):
+    var results = []
+    # this code doesn't work for radius == 0; can you see why?
+    var cube = center + cube_scale(cube_direction(4), radius)
+    for i in range(6):
+        for j in range(radius):
+            results.append(cube)
+            cube = cube_neighbor(cube, i)
+    return results
+
+func cube_scale(cube, magnitude):
+	return cube * magnitude
+
+func cube_spiral(center, radius):
+    var results = [center]
+    for k in range(1,radius+1):
+        results = results + cube_ring(center, k)
+    return results
+
+func axial_to_offset(axial):
+	var col = axial.x
+	var row = -axial.x-axial.y + (axial.x + (int(axial.x)&1)) / 2
+	return Vector2(col, -row)
+	
+func axial_to_pixel(axial):
+    var x = (23 * axial.x)+23
+    var y = (15 * axial.x  +  30 * axial.y)+15
     return Vector2(x, y)
+
+func pixel_to_axial(pos):
+	var q = (pos.x+7.5-23)/23.0
+	var r = (pos.x+7.5-23)/-46.0 + (pos.y-1-15) / 30.0
+	return axial_round(Vector2(q,r))
+
+func pixel_to_cube(pos):
+	var axial = pixel_to_axial(pos)
+	return Vector3(axial.x, axial.y, -axial.x-axial.y)
+
+func axial_round(axial):
+    return cube_to_axial(cube_round(axial_to_cube(axial)))
+
+func axial_to_cube(axial):
+	return Vector3(axial.x,axial.y,0-axial.x-axial.y)
+
+func cube_to_axial(cube):
+	return Vector2(cube.x,cube.y)
+
+func cube_to_offset(cube):
+	return axial_to_offset(cube_to_axial(cube))
+	
+func cube_round(cube):
+	var rx = round(cube.x)
+	var ry = round(cube.y)
+	var rz = round(cube.z)
+	
+	var x_diff = abs(rx - cube.x)
+	var y_diff = abs(ry - cube.y)
+	var z_diff = abs(rz - cube.z)
+	
+	if x_diff > y_diff and x_diff > z_diff:
+		 rx = -ry-rz
+	elif y_diff > z_diff:
+		ry = -rx-rz
+	else:
+		rz = -rx-ry
+	
+	return Vector3(rx, ry, rz)
+
+func pixel_to_offset(pos):
+	return axial_to_offset(pixel_to_axial(pos))
+	
+func cube_get_cell(cube):
+	var offset = cube_to_offset(cube)
+	return get_cell(offset.x, offset.y)

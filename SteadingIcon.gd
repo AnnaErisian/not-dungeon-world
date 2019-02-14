@@ -28,20 +28,12 @@ func _ready():
 	image.create(IMAGE_WIDTH,IMAGE_HEIGHT,false,Image.FORMAT_RGBA8)
 	
 	generate()
-	update()
-
-var counter = 0
-const DELAY = .5
-func _process(delta):
-	counter += delta
-	if(counter > DELAY):
-		counter = 0
-		generate()
 
 func generate():
 	image.lock()
 	clear_image()
-	randomColor()
+	if !color:
+		randomColor()
 	match steading_size:
 		0:
 			generate_ghost_steading()
@@ -56,25 +48,29 @@ func generate():
 	image.unlock()
 	texture = ImageTexture.new()
 	texture.create_from_image(image, 0)
+	update()
 
 func randomColor():
 	color = hsl_to_rgba(random_hsl_color(c1_min_h, c1_max_h, c1_min_s, c1_max_s, c1_min_l, c1_max_l))
 
 
 func generate_ghost_steading():
+	print("GENERATE GHOST")
 	icon_width = 7+2*(randi()%2)
 	icon_height = 0
 	for i in range(icon_width):
 		var col_h = max(0, randi()%8-2)
-		fill_box(i,icon_height,i,icon_height+col_h)
+		fill_box(i,icon_height,i+1,icon_height+col_h)
 
 func generate_village():
+	print("GENERATE VILLAGE")
 	icon_width = 7+2*(randi()%2)
 	icon_height = 2+randi()%5
 	fill_base()
 	fill_low_tri(ceil(icon_width/2), icon_height, ceil(icon_width/2)+1)
 
 func generate_town():
+	print("GENERATE TOWN")
 	icon_width = 11+2*(randi()%2)
 	icon_height = 4+randi()%4
 	fill_base()
@@ -87,6 +83,7 @@ func generate_town():
 	place_feature(feature_left, x_left, 1)
 
 func generate_keep():
+	print("GENERATE KEEP")
 	icon_width = 11+2*(randi()%2)
 	icon_height = 4+randi()%5
 	icon_width = 9+2*(randi()%2)
@@ -99,6 +96,7 @@ func generate_keep():
 	crenellate()
 
 func generate_city():
+	print("GENERATE CITY")
 	icon_width = 15+2*(randi()%3)
 	icon_height = 4+randi()%3
 	fill_base()
