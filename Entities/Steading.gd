@@ -39,11 +39,16 @@ var population = POPULATION.Exodus
 var defenses = DEFENSES.None
 var tags = []
 
+#adjusted array of things we've been in Want of
+var needs = [0,0,0,0,0,0]
+
 #resources
 var food = 0
 var lumber = 0
 var stone = 0
 var ore = 0
+var water = 0
+var wealth = 0
 
 # Set to true when resources are not available for next turn
 var lacking_resources = false
@@ -117,9 +122,9 @@ func get_initiative():
 	return 0;
 
 func take_turn():
-	print(to_string())
+	#print(to_string())
 	if size == SIZE.Ghost:
-		print("GHOST")
+		#print("GHOST")
 		return #We're dead, we do nothing
 	
 	#try to do things
@@ -129,28 +134,28 @@ func take_turn():
 
 func _attempt_actions():
 	if(try_collapse()):
-		print("COLLAPSE")
+		#print("COLLAPSE")
 		return
 	if(try_want()):
-		print("WANT")
+		#print("WANT")
 		return
 	if(try_growth()):
-		print("GROWTH")
+		#print("GROWTH")
 		return
 	if(try_profit()):
-		print("PROFIT")
+		#print("PROFIT")
 		return
 	if(try_breed()):
-		print("BREED")
+		#print("BREED")
 		return
 	if(try_create_wanderers()):
-		print("CREATE WANDERERS")
+		#print("CREATE WANDERERS")
 		return
 	if(try_fend()):
-		print("FEND")
+		#print("FEND")
 		return
 	if(try_gather()):
-		print("GATHER")
+		#print("GATHER")
 		return
 	print("NOTHING?")
 
@@ -169,6 +174,11 @@ func _use_up_resources():
 	#prosperity lets us ignore some needs if we have people, but if they're too much we're in trouble
 	if total_unmet_needs > min(get_prosperity(), get_population()):
 		lacking_resources = true
+		if food_need > 0:
+			_register_resource_need(biomes.FOOD)
+		if building_material_need > 0:
+			_register_resource_need(biomes.LUMBER)
+			_register_resource_need(biomes.STONE)
 	#reduce food, min 0
 	food = max(0,food-required_food)
 	#reduce lumber, then stone
@@ -176,6 +186,20 @@ func _use_up_resources():
 	lumber = max(0,lumber-required_material)
 	if remaining_building_need > 0:
 		stone = max(0,stone-remaining_building_need)
+
+func _register_resource_need(type):
+	needs[type] += 1.0
+	for type in range(needs.size()):
+		needs[type] *= .8
+
+func get_most_needed_resource():
+	var most_needed_type = biomes.FOOD
+	var most_needed_rate = 0
+	for type in range(needs.size()):
+		if(needs[type] > most_needed_rate):
+			most_needed_rate = needs[type]
+			most_needed_type = type
+	return most_needed_type
 
 
 func try_want():

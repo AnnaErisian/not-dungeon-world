@@ -55,7 +55,7 @@ func randomColor():
 
 
 func generate_ghost_steading():
-	print("GENERATE GHOST")
+	#print("GENERATE GHOST")
 	icon_width = 7+2*(randi()%2)
 	icon_height = 0
 	for i in range(icon_width):
@@ -63,14 +63,14 @@ func generate_ghost_steading():
 		fill_box(i,icon_height,i+1,icon_height+col_h)
 
 func generate_village():
-	print("GENERATE VILLAGE")
+	#print("GENERATE VILLAGE")
 	icon_width = 7+2*(randi()%2)
 	icon_height = 2+randi()%5
 	fill_base()
 	fill_low_tri(ceil(icon_width/2), icon_height, ceil(icon_width/2)+1)
 
 func generate_town():
-	print("GENERATE TOWN")
+	#print("GENERATE TOWN")
 	icon_width = 11+2*(randi()%2)
 	icon_height = 4+randi()%4
 	fill_base()
@@ -83,7 +83,7 @@ func generate_town():
 	place_feature(feature_left, x_left, 1)
 
 func generate_keep():
-	print("GENERATE KEEP")
+	#print("GENERATE KEEP")
 	icon_width = 11+2*(randi()%2)
 	icon_height = 4+randi()%5
 	icon_width = 9+2*(randi()%2)
@@ -96,7 +96,7 @@ func generate_keep():
 	crenellate()
 
 func generate_city():
-	print("GENERATE CITY")
+	#print("GENERATE CITY")
 	icon_width = 15+2*(randi()%3)
 	icon_height = 4+randi()%3
 	fill_base()

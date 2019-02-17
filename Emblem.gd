@@ -36,13 +36,13 @@ func _ready():
 	generate()
 	update()
 
-var counter = 0
-const DELAY = 1
-func _process(delta):
-	counter += delta
-	if(counter > DELAY):
-		counter = 0
-		generate()
+#var counter = 0
+#const DELAY = 1
+#func _process(delta):
+#	counter += delta
+#	if(counter > DELAY):
+#		counter = 0
+#		generate()
 
 func generate():
 	image.lock()

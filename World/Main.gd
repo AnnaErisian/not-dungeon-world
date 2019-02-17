@@ -9,8 +9,8 @@ func _ready():
 	# Initialization here
 	pass
 
-#func _process(delta):
-#	pass
+func _process():
+	print($TurnTimer.time_left)
 
 func _input(event):
 	if event is InputEventMouseButton:
@@ -21,7 +21,6 @@ func _input(event):
 			print($Terrain.get_cell(cell.x, cell.y))
 
 func _on_TurnTimer_timeout():
-	print("---------------")
 	for x in $Terrain/Steadings.get_children():
 		x.take_turn()
 	for x in $Terrain/Merchants.get_children():

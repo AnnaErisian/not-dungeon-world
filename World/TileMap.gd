@@ -4,6 +4,7 @@
 extends TileMap
 
 var biomes = preload("res://World/Biomes.gd")
+var PriorityQueue = preload("res://scripts/PriorityQueue.gd")
 
 const MAJOR_BIOME_SCALE = .04
 const MINOR_BIOME_SCALE = .16
@@ -45,7 +46,7 @@ func _ready():
 	c3 *= 2.0
 	r3 = size*40*(.8+.15*randf())
 
-var size = 6
+var size = 20
 var active_map_filling_var_i = -size
 var active_map_filling_var_j = -size
 var active_map_filling_var_k = -size
@@ -73,6 +74,7 @@ func progressIterators():
 				if(active_map_filling_var_i>size):
 					done=true
 					setupSteadings()
+					setupMerchants()
 					return false
 		hit = active_map_filling_var_i+active_map_filling_var_j+active_map_filling_var_k==0
 	return true
@@ -160,7 +162,6 @@ func noise(generator, x,y):
 #       ENTITY PLACEMENT
 #
 func setupSteadings():
-	#create a steading at 0,0
 	var steadingScene = load("res://Entities/Steading.tscn")
 	for r in range(1,size):
 		var possible_cells = cube_ring(Vector3(0,0,0), r)
@@ -172,7 +173,88 @@ func setupSteadings():
 		new_steading.population = new_steading.POPULATION.Booming
 		$Steadings.add_child(new_steading)
 		new_steading.update_icon()
+		
+func setupMerchants():
+	var merchantScene = load("res://Entities/Wanderers/Merchant.tscn")
+	for r in range(6,size*3):
+		var possible_cells = cube_ring(Vector3(0,0,0), floor(r/5))
+		var target = possible_cells[randi()%possible_cells.size()]
+		var new_merchant = merchantScene.instance()
+		new_merchant.position = axial_to_pixel(cube_to_axial(target))
+		$Merchants.add_child(new_merchant)
+		new_merchant.update_icon()
 
+#
+#        ENTITY MANAGEMENT
+#
+func get_steading_in_cell_pixel(pixel):
+	var offset_coord = pixel_to_offset(pixel)
+	return get_steading_in_cell_offset(offset_coord)
+	
+func get_steading_in_cell_cube(cube):
+	var offset_coord = cube_to_offset(cube)
+	return get_steading_in_cell_offset(offset_coord)
+
+func get_steading_in_cell_offset(offset):
+	for steading in $Steadings.get_children():
+		var steading_offset = pixel_to_offset(steading.position)
+		if steading_offset == offset:
+			return steading
+	return null
+
+#
+#        PATHFINDING
+#
+
+#Both arguments are cube coordinates
+func find_path(start,goal):
+	var frontier = PriorityQueue.new()
+	frontier.put(0, start)
+	var came_from = {}
+	var cost_so_far = {}
+	came_from[start] = null
+	cost_so_far[start] = 0
+	
+	while not frontier.empty():
+		var current = frontier.get()
+		
+		if current == goal:
+			break
+		
+		for next in get_neighbors(current):
+			var new_cost = cost_so_far[current] + 0 # nothing special for now graph.cost(current, next)
+			if !cost_so_far.has(next) or new_cost < cost_so_far[next]:
+				cost_so_far[next] = new_cost
+				var priority = new_cost + heuristic(goal, next)
+				frontier.put(priority, next)
+				came_from[next] = current
+	
+	var current = goal 
+	var path = []
+	while current != start: 
+	   path.append(current)
+	   current = came_from[current]
+	path.invert()
+	return path
+
+func path_to_axial(path):
+	var npath = []
+	for p in path:
+		npath.append(Vector2(p.x, p.y))
+	return npath
+
+func path_to_pixel(path):
+	var npath = []
+	for p in path:
+		npath.append(cube_to_pixel(p))
+	return npath
+
+func get_neighbors(cube):
+	return cube_ring(cube,1)
+
+#both cubic
+func heuristic(goal,cell):
+	return cube_distance(goal,cell)
 
 #
 #        HEX GRID OPERATIONS
@@ -216,6 +298,9 @@ func axial_to_pixel(axial):
     var x = (23 * axial.x)+23
     var y = (15 * axial.x  +  30 * axial.y)+15
     return Vector2(x, y)
+	
+func cube_to_pixel(axial):
+    return axial_to_pixel(cube_to_axial(axial))
 
 func pixel_to_axial(pos):
 	var q = (pos.x+7.5-23)/23.0
@@ -262,3 +347,6 @@ func pixel_to_offset(pos):
 func cube_get_cell(cube):
 	var offset = cube_to_offset(cube)
 	return get_cell(offset.x, offset.y)
+
+func cube_distance(a, b):
+	return (abs(a.x - b.x) + abs(a.y - b.y) + abs(a.z - b.z)) / 2

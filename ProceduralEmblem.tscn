@@ -2,10 +2,8 @@
 
 [ext_resource path="res://Emblem.gd" type="Script" id=1]
 
-[node name="Emblem" type="Sprite"]
+[node name="Emblem" type="Sprite" index="0"]
 
-position = Vector2( 100, 100 )
-scale = Vector2( 10, 10 )
 script = ExtResource( 1 )
 _sections_unfolded = [ "Transform" ]
 c1_min_h = 0

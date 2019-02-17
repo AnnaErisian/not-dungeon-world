@@ -65,7 +65,7 @@ _sections_unfolded = [ "Drag Margin", "Limit", "Offset", "Transform" ]
 [node name="TurnTimer" type="Timer" parent="." index="2"]
 
 process_mode = 1
-wait_time = 0.1
+wait_time = 0.25
 one_shot = false
 autostart = true
 
