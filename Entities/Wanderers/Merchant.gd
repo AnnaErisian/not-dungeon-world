@@ -2,7 +2,7 @@ extends Node2D
 
 const DEBUG = false
 
-var biomes = preload("res://World/Biomes.gd")
+var biomes = preload("res://World/Map/Biomes.gd")
 
 #dict of Steadings to arrays of needed resources
 var known_steading_needs = {}
@@ -55,20 +55,20 @@ func register_steading():
 
 func gather():
 	var cube_tile = world.pixel_to_cube(position)
-	var tile_type = world.cube_get_cell(cube_tile)
-	var resource_type = biomes.gather_resource(tile_type)
+	var biome_data = world.cube_get_cell_data(cube_tile)
+	var resource_type = biome_data.get_random_resource()
 	match resource_type:
-		biomes.FOOD:
-			food += 100
-		biomes.LUMBER:
-			lumber += 100
-		biomes.WATER:
+		"food":
+			food += 1
+		"lumber":
+			lumber += 1
+		"water":
 			pass #not useful yet
-		biomes.STONE:
-			stone += 100
-		biomes.ORE:
+		"stone":
+			stone += 1
+		"ore":
 			pass #not useful yet
-		biomes.WEALTH:
+		"wealth":
 			pass #not useful yet
 
 func trade_with_steading():
@@ -96,19 +96,19 @@ func get_steading_we_can_trade_to():
 	for steading in known_steading_needs:
 		var needed_resource = known_steading_needs[steading]
 		match needed_resource:
-			biomes.FOOD:
+			"food":
 				if food > 20:
 					return steading
-			biomes.LUMBER:
+			"lumber":
 				if lumber > 20:
 					return steading
-			biomes.STONE:
+			"stone":
 				if stone > 20:
 					return steading
-			biomes.ORE:
+			"ore":
 				if ore > 20:
 					return steading
-			biomes.WATER:
+			"wealth":
 				if water > 20:
 					return steading
 	return null
@@ -141,7 +141,7 @@ func wander():
 	var real_options = []
 	var preferred_option = null
 	for option in options:
-		if world.cube_get_cell(option) != biomes.BORDER:
+		if world.cube_get_cell_data(option).type_id != biomes.BORDER:
 			real_options.append(option)
 			var possible_steading = world.get_steading_in_cell_cube(option)
 			if possible_steading != null:

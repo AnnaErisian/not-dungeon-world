@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Sprites.png-ec09dfda4d35c2add011a259fda90f47.stex"
+path="res://.import/Sprites.png-95509b12ca043d047e3711111e743193.stex"
 
 [deps]
 
-source_file="res://World/Sprites.png"
-dest_files=[ "res://.import/Sprites.png-ec09dfda4d35c2add011a259fda90f47.stex" ]
+source_file="res://World/Map/Sprites.png"
+dest_files=[ "res://.import/Sprites.png-95509b12ca043d047e3711111e743193.stex" ]
 
 [params]
 

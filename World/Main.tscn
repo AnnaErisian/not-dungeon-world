@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://World/Main.gd" type="Script" id=1]
-[ext_resource path="res://World/WorldTiles.tres" type="TileSet" id=2]
-[ext_resource path="res://World/TileMap.gd" type="Script" id=3]
+[ext_resource path="res://World/Map/WorldTiles.tres" type="TileSet" id=2]
+[ext_resource path="res://World/Terrain.gd" type="Script" id=3]
 [ext_resource path="res://World/Camera2D.gd" type="Script" id=4]
 
 [node name="Root" type="Node" index="0"]

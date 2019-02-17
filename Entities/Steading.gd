@@ -1,6 +1,6 @@
 extends Node2D
 
-var biomes = preload("res://World/Biomes.gd")
+var biomes = preload("res://World/Map/Biomes.gd")
 
 enum SIZE{
 	Ghost,
@@ -40,7 +40,7 @@ var defenses = DEFENSES.None
 var tags = []
 
 #adjusted array of things we've been in Want of
-var needs = [0,0,0,0,0,0]
+var needs = {}
 
 #resources
 var food = 0
@@ -175,10 +175,10 @@ func _use_up_resources():
 	if total_unmet_needs > min(get_prosperity(), get_population()):
 		lacking_resources = true
 		if food_need > 0:
-			_register_resource_need(biomes.FOOD)
+			_register_resource_need("food")
 		if building_material_need > 0:
-			_register_resource_need(biomes.LUMBER)
-			_register_resource_need(biomes.STONE)
+			_register_resource_need("lumber")
+			_register_resource_need("stone")
 	#reduce food, min 0
 	food = max(0,food-required_food)
 	#reduce lumber, then stone
@@ -188,14 +188,17 @@ func _use_up_resources():
 		stone = max(0,stone-remaining_building_need)
 
 func _register_resource_need(type):
-	needs[type] += 1.0
-	for type in range(needs.size()):
+	if needs.has(type):
+		needs[type] += 1.0
+	else:
+		needs[type] = 1.0
+	for type in needs.keys():
 		needs[type] *= .8
 
 func get_most_needed_resource():
-	var most_needed_type = biomes.FOOD
+	var most_needed_type = "food"
 	var most_needed_rate = 0
-	for type in range(needs.size()):
+	for type in needs.keys():
 		if(needs[type] > most_needed_rate):
 			most_needed_rate = needs[type]
 			most_needed_type = type
@@ -295,33 +298,26 @@ func try_gather():
 	return true
 
 func gather_resources(tilemap, cube_tile):
-	var tile_type = tilemap.cube_get_cell(cube_tile)
-	var resource_type = biomes.gather_resource(tile_type)
+	var biome_data = tilemap.cube_get_cell_data(cube_tile)
+	var resource_type = biome_data.get_random_resource()
 	match resource_type:
-		biomes.FOOD:
+		"food":
 			food += 1
-		biomes.LUMBER:
+		"lumber":
 			lumber += 1
-		biomes.WATER:
+		"water":
 			pass #not useful yet
-		biomes.STONE:
+		"stone":
 			stone += 1
-		biomes.ORE:
+		"ore":
 			pass #not useful yet
-		biomes.WEALTH:
+		"wealth":
 			pass #not useful yet
 
 
 func get_resource_total():
 	return food+lumber+ore+stone
-		
-		
-		
-		
-		
-		
-		
-		
+
 func release_caravan():
 	pass
 
